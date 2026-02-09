@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parrainage Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Bangers&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Bangers', 'cursive'],
+            },
+            colors: {
+              brand: {
+                dark: '#0f172a',
+                purple: '#7c3aed',
+                fire: '#f59e0b',
+                red: '#ef4444',
+              }
+            },
+            animation: {
+              'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #0f172a;
+        color: white;
+      }
+      .fire-gradient {
+        background: radial-gradient(circle, rgba(255,200,0,1) 0%, rgba(255,100,0,1) 50%, rgba(255,0,0,0) 80%);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "framer-motion": "https://esm.sh/framer-motion@^12.34.0",
+    "jspdf": "https://esm.sh/jspdf@^4.1.0",
+    "canvas-confetti": "https://esm.sh/canvas-confetti@^1.9.4",
+    "jspdf-autotable": "https://esm.sh/jspdf-autotable@^5.0.7"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
