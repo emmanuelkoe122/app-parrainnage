@@ -25,7 +25,7 @@ const AppContent: React.FC = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-brand-fire to-brand-red rounded-lg flex items-center justify-center">
                  <span className="font-display text-slate-900 text-xl pt-1">P</span>
               </div>
-              <span className="text-xl font-display tracking-wide text-white">Parrainage<span className="text-brand-purple">Academy</span></span>
+              <span className="text-xl font-display tracking-wide text-white">Parrainage <span className="text-brand-purple">AE2I</span></span>
             </div>
             
             <div className="flex space-x-1 bg-slate-800 p-1 rounded-full">
