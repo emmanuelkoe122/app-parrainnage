@@ -171,7 +171,7 @@ const CeremonyStage: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full min-h-[750px] bg-slate-900/80 rounded-3xl overflow-hidden border border-slate-700 flex flex-col items-center justify-center p-4 shadow-2xl backdrop-blur-sm">
+    <div className="relative w-full min-h-[600px] bg-slate-900/80 rounded-3xl overflow-hidden border border-slate-700 flex flex-col items-center justify-center p-4 shadow-2xl backdrop-blur-sm">
       
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-950 to-black -z-10"></div>
@@ -224,8 +224,8 @@ const CeremonyStage: React.FC = () => {
         
         {/* Filleul Side */}
         {(state === CeremonyState.SELECTING_FILLEUL || state === CeremonyState.TRANSITION_TO_PARRAIN || state === CeremonyState.SELECTING_PARRAIN || state === CeremonyState.REVEAL || state === CeremonyState.HANDSHAKE || state === CeremonyState.FINISHED) && (
-            <div className="flex flex-col items-center gap-6 w-[45%] md:w-[400px]">
-                <h3 className="text-2xl md:text-3xl font-display text-blue-400 tracking-wider drop-shadow-md">FILLEUL ({currentPairing?.source})</h3>
+            <div className="flex flex-col items-center gap-4 w-[45%] md:w-[300px]">
+                <h3 className="text-xl md:text-2xl font-display text-blue-400 tracking-wider drop-shadow-md">FILLEUL ({currentPairing?.source})</h3>
                 <motion.div 
                     key="filleul-card-container"
                     variants={shakeVariant}
@@ -251,8 +251,8 @@ const CeremonyStage: React.FC = () => {
                                 alt="Filleul" 
                                 className="w-full h-full object-cover animate-in fade-in duration-75" 
                             />
-                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/90 to-transparent p-6 text-center pt-12">
-                                <p className="text-3xl font-display text-white truncate drop-shadow-md">{displayedFilleul.name}</p>
+                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4 text-center pt-10">
+                                <p className="text-2xl font-display text-white truncate drop-shadow-md">{displayedFilleul.name}</p>
                             </div>
                         </>
                     ) : (
@@ -290,8 +290,8 @@ const CeremonyStage: React.FC = () => {
 
         {/* Parrain Side */}
         {(state === CeremonyState.SELECTING_PARRAIN || state === CeremonyState.REVEAL || state === CeremonyState.HANDSHAKE || state === CeremonyState.FINISHED) && (
-            <div className="flex flex-col items-center gap-6 w-[45%] md:w-[400px]">
-                <h3 className="text-2xl md:text-3xl font-display text-green-400 tracking-wider drop-shadow-md">PARRAIN ({currentPairing?.target})</h3>
+            <div className="flex flex-col items-center gap-4 w-[45%] md:w-[300px]">
+                <h3 className="text-xl md:text-2xl font-display text-green-400 tracking-wider drop-shadow-md">PARRAIN ({currentPairing?.target})</h3>
                 <motion.div 
                     key="parrain-card-container"
                     variants={shakeVariant}
@@ -317,8 +317,8 @@ const CeremonyStage: React.FC = () => {
                                 alt="Parrain" 
                                 className="w-full h-full object-cover animate-in fade-in duration-75" 
                             />
-                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/90 to-transparent p-6 text-center pt-12">
-                                <p className="text-3xl font-display text-white truncate drop-shadow-md">{displayedParrain.name}</p>
+                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4 text-center pt-10">
+                                <p className="text-2xl font-display text-white truncate drop-shadow-md">{displayedParrain.name}</p>
                             </div>
                         </>
                     ) : (
@@ -360,12 +360,12 @@ const CeremonyStage: React.FC = () => {
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="text-6xl md:text-8xl font-display text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-emerald-500 to-teal-500 mb-8 drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] text-center px-4 tracking-wider uppercase"
+                className="text-5xl md:text-7xl font-display text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-emerald-500 to-teal-500 mb-6 drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] text-center px-4 tracking-wider uppercase"
               >
                   PARRAINAGE VALIDÉ !
               </motion.h2>
               
-              <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-12 w-full max-w-4xl justify-center">
+              <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-10 w-full max-w-4xl justify-center">
                   <motion.div 
                     initial={{ x: -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -373,10 +373,10 @@ const CeremonyStage: React.FC = () => {
                     className="flex flex-col items-center"
                   >
                       <div className="relative">
-                        <img src={selectedFilleul?.photoUrl} className="w-56 h-56 md:w-72 md:h-72 rounded-full border-8 border-blue-500 object-cover shadow-[0_0_60px_rgba(59,130,246,0.8)]" />
-                        <div className="absolute -bottom-4 bg-blue-600 text-white px-6 py-2 rounded-full font-bold shadow-lg text-xl border-2 border-white">Filleul</div>
+                        <img src={selectedFilleul?.photoUrl} className="w-40 h-40 md:w-60 md:h-60 rounded-full border-8 border-blue-500 object-cover shadow-[0_0_60px_rgba(59,130,246,0.8)]" />
+                        <div className="absolute -bottom-4 bg-blue-600 text-white px-6 py-2 rounded-full font-bold shadow-lg text-lg border-2 border-white">Filleul</div>
                       </div>
-                      <p className="text-3xl md:text-4xl font-display mt-8 text-white text-center">{selectedFilleul?.name}</p>
+                      <p className="text-2xl md:text-3xl font-display mt-8 text-white text-center">{selectedFilleul?.name}</p>
                       <p className="text-blue-400 text-lg font-bold">{selectedFilleul?.className}</p>
                   </motion.div>
 
@@ -389,10 +389,10 @@ const CeremonyStage: React.FC = () => {
                     className="flex flex-col items-center"
                   >
                       <div className="relative">
-                        <img src={selectedParrain?.photoUrl} className="w-56 h-56 md:w-72 md:h-72 rounded-full border-8 border-green-500 object-cover shadow-[0_0_60px_rgba(34,197,94,0.8)]" />
-                        <div className="absolute -bottom-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold shadow-lg text-xl border-2 border-white">Parrain</div>
+                        <img src={selectedParrain?.photoUrl} className="w-40 h-40 md:w-60 md:h-60 rounded-full border-8 border-green-500 object-cover shadow-[0_0_60px_rgba(34,197,94,0.8)]" />
+                        <div className="absolute -bottom-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold shadow-lg text-lg border-2 border-white">Parrain</div>
                       </div>
-                      <p className="text-3xl md:text-4xl font-display mt-8 text-white text-center">{selectedParrain?.name}</p>
+                      <p className="text-2xl md:text-3xl font-display mt-8 text-white text-center">{selectedParrain?.name}</p>
                       <p className="text-green-400 text-lg font-bold">{selectedParrain?.className}</p>
                   </motion.div>
               </div>
