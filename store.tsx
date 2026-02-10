@@ -1,14 +1,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Student, Match, INITIAL_STUDENTS, ClassName, GroupType, PAIRING_RULES } from './types';
 
+interface AppSettings {
+  logoUrl: string | null;
+}
+
 interface AppContextType {
   students: Student[];
   matches: Match[];
+  settings: AppSettings;
   addStudent: (student: Student) => void;
   addStudents: (newStudents: Student[]) => void;
   removeStudent: (id: string) => void;
   createMatch: (filleulId: string, parrainId: string) => void;
   resetAll: () => void;
+  updateSettings: (newSettings: Partial<AppSettings>) => void;
   getAvailableFilleuls: (className: ClassName) => Student[];
   getAvailableParrains: (className: ClassName) => Student[];
   getPossiblePairing: () => { ruleIndex: number, source: ClassName, target: ClassName, available: boolean } | null;
@@ -28,6 +34,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [settings, setSettings] = useState<AppSettings>(() => {
+    const saved = localStorage.getItem('pa_settings');
+    return saved ? JSON.parse(saved) : { logoUrl: null };
+  });
+
   useEffect(() => {
     localStorage.setItem('pa_students', JSON.stringify(students));
   }, [students]);
@@ -35,6 +46,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('pa_matches', JSON.stringify(matches));
   }, [matches]);
+
+  useEffect(() => {
+    localStorage.setItem('pa_settings', JSON.stringify(settings));
+  }, [settings]);
 
   const addStudent = (student: Student) => {
     setStudents(prev => [...prev, student]);
@@ -46,7 +61,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const removeStudent = (id: string) => {
     setStudents(prev => prev.filter(s => s.id !== id));
-    // Also remove any matches? For now, let's just keep logic simple.
   };
 
   const createMatch = (filleulId: string, parrainId: string) => {
@@ -71,12 +85,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const updateSettings = (newSettings: Partial<AppSettings>) => {
+      setSettings(prev => ({ ...prev, ...newSettings }));
+  };
+
   const resetAll = () => {
-    if (window.confirm("Voulez-vous vraiment tout réinitialiser ? Cela effacera tous les parrainages.")) {
+    if (window.confirm("Voulez-vous vraiment tout réinitialiser ? Cela effacera tous les parrainages et les paramètres.")) {
        setStudents(INITIAL_STUDENTS);
        setMatches([]);
+       setSettings({ logoUrl: null });
        localStorage.removeItem('pa_students');
        localStorage.removeItem('pa_matches');
+       localStorage.removeItem('pa_settings');
     }
   };
 
@@ -105,11 +125,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{ 
       students, 
       matches, 
+      settings,
       addStudent,
       addStudents,
       removeStudent, 
       createMatch, 
       resetAll,
+      updateSettings,
       getAvailableFilleuls,
       getAvailableParrains,
       getPossiblePairing

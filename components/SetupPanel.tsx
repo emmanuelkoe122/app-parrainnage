@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useApp } from '../store';
 import { ClassName, GroupType, Student } from '../types';
-import { Plus, Trash2, Upload, FolderInput, FileImage, Users } from 'lucide-react';
+import { Plus, Trash2, Upload, FolderInput, FileImage, Users, Image as ImageIcon } from 'lucide-react';
 
 const SetupPanel: React.FC = () => {
-  const { students, addStudent, addStudents, removeStudent, resetAll } = useApp();
+  const { students, settings, addStudent, addStudents, removeStudent, resetAll, updateSettings } = useApp();
   
   // Single Add State
   const [newName, setNewName] = useState('');
@@ -23,6 +23,17 @@ const SetupPanel: React.FC = () => {
         setNewPhoto(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+  
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            updateSettings({ logoUrl: reader.result as string });
+        };
+        reader.readAsDataURL(file);
     }
   };
 
@@ -112,9 +123,17 @@ const SetupPanel: React.FC = () => {
     <div className="p-6 bg-slate-900 rounded-lg shadow-xl text-slate-100 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-display text-brand-fire">Gestion des Dossiers</h2>
-        <button onClick={resetAll} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition">
-            Réinitialiser Tout
-        </button>
+        <div className="flex gap-4">
+             <div className="relative">
+                <input type="file" id="logo-upload" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                <label htmlFor="logo-upload" className="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded text-sm transition flex items-center gap-2 border border-slate-600 shadow-sm">
+                    <ImageIcon className="w-4 h-4" /> {settings.logoUrl ? 'Changer Logo' : 'Ajouter Logo'}
+                </label>
+            </div>
+            <button onClick={resetAll} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition shadow-sm">
+                Réinitialiser Tout
+            </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">

@@ -17,7 +17,7 @@ enum CeremonyState {
 }
 
 const CeremonyStage: React.FC = () => {
-  const { getPossiblePairing, getAvailableFilleuls, getAvailableParrains, createMatch } = useApp();
+  const { getPossiblePairing, getAvailableFilleuls, getAvailableParrains, createMatch, settings } = useApp();
   const [state, setState] = useState<CeremonyState>(CeremonyState.IDLE);
   const [countdown, setCountdown] = useState(5);
   
@@ -28,6 +28,8 @@ const CeremonyStage: React.FC = () => {
   const [displayedFilleul, setDisplayedFilleul] = useState<Student | null>(null);
   const [displayedParrain, setDisplayedParrain] = useState<Student | null>(null);
   const [flashEffect, setFlashEffect] = useState<'FILLEUL' | 'PARRAIN' | null>(null);
+
+  const logoSrc = settings.logoUrl || "/logo_ae2i.png";
 
   const startCeremony = () => {
     const pairing = getPossiblePairing();
@@ -175,6 +177,16 @@ const CeremonyStage: React.FC = () => {
       
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-950 to-black -z-10"></div>
+      
+      {/* Logo Watermark inside stage */}
+      <div className="absolute inset-0 flex items-center justify-center z-0 opacity-10 pointer-events-none">
+          <img 
+            src={logoSrc} 
+            alt="Logo AE2I" 
+            className="w-[60%] max-w-[500px] object-contain" 
+            onError={(e) => e.currentTarget.style.display = 'none'}
+          />
+      </div>
       
       {/* Controls */}
       {state === CeremonyState.IDLE && (

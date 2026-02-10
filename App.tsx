@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppProvider } from './store';
+import { AppProvider, useApp } from './store';
 import SetupPanel from './components/SetupPanel';
 import CeremonyStage from './components/CeremonyStage';
 import ResultsPanel from './components/ResultsPanel';
@@ -13,17 +13,37 @@ enum View {
 }
 
 const AppContent: React.FC = () => {
+  const { settings } = useApp();
   const [currentView, setCurrentView] = useState<View>(View.CEREMONY);
+  
+  // Use uploaded logo or fallback to default path (which might fail if file doesn't exist)
+  const logoSrc = settings.logoUrl || "/logo_ae2i.png";
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-brand-purple selection:text-white">
+    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-brand-purple selection:text-white relative overflow-hidden">
+      
+      {/* Global Background Logo Watermark */}
+      <div className="fixed inset-0 z-0 flex items-center justify-center pointer-events-none opacity-[0.05]">
+        <img 
+            src={logoSrc} 
+            alt="AE2I Background" 
+            className="w-[80vw] max-w-[800px] object-contain filter grayscale"
+            onError={(e) => e.currentTarget.style.display = 'none'}
+        />
+      </div>
+
       {/* Navbar */}
       <nav className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-brand-fire to-brand-red rounded-lg flex items-center justify-center">
-                 <span className="font-display text-slate-900 text-xl pt-1">P</span>
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden border border-white/10 shadow-inner">
+                 <img 
+                    src={logoSrc} 
+                    alt="Logo" 
+                    className="w-full h-full object-contain p-0.5" 
+                    onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.classList.add('bg-gradient-to-br', 'from-brand-fire', 'to-brand-red'); e.currentTarget.parentElement!.innerHTML = '<span class="font-display text-slate-900 text-xl pt-1">P</span>'; }}
+                 />
               </div>
               <span className="text-xl font-display tracking-wide text-white">Parrainage <span className="text-brand-purple">AE2I</span></span>
             </div>
@@ -53,7 +73,7 @@ const AppContent: React.FC = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {currentView === View.SETUP && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <SetupPanel />
