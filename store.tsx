@@ -5,6 +5,7 @@ interface AppContextType {
   students: Student[];
   matches: Match[];
   addStudent: (student: Student) => void;
+  addStudents: (newStudents: Student[]) => void;
   removeStudent: (id: string) => void;
   createMatch: (filleulId: string, parrainId: string) => void;
   resetAll: () => void;
@@ -37,6 +38,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const addStudent = (student: Student) => {
     setStudents(prev => [...prev, student]);
+  };
+
+  const addStudents = (newStudents: Student[]) => {
+    setStudents(prev => [...prev, ...newStudents]);
   };
 
   const removeStudent = (id: string) => {
@@ -100,7 +105,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{ 
       students, 
       matches, 
-      addStudent, 
+      addStudent,
+      addStudents,
       removeStudent, 
       createMatch, 
       resetAll,
