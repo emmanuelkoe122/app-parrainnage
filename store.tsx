@@ -25,30 +25,58 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Load from localStorage or use initial
   const [students, setStudents] = useState<Student[]>(() => {
-    const saved = localStorage.getItem('pa_students');
-    return saved ? JSON.parse(saved) : INITIAL_STUDENTS;
+    try {
+        const saved = localStorage.getItem('pa_students');
+        return saved ? JSON.parse(saved) : INITIAL_STUDENTS;
+    } catch (e) {
+        console.error("Erreur lecture students localStorage", e);
+        return INITIAL_STUDENTS;
+    }
   });
 
   const [matches, setMatches] = useState<Match[]>(() => {
-    const saved = localStorage.getItem('pa_matches');
-    return saved ? JSON.parse(saved) : [];
+    try {
+        const saved = localStorage.getItem('pa_matches');
+        return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        console.error("Erreur lecture matches localStorage", e);
+        return [];
+    }
   });
 
   const [settings, setSettings] = useState<AppSettings>(() => {
-    const saved = localStorage.getItem('pa_settings');
-    return saved ? JSON.parse(saved) : { logoUrl: null };
+    try {
+        const saved = localStorage.getItem('pa_settings');
+        return saved ? JSON.parse(saved) : { logoUrl: null };
+    } catch (e) {
+        console.error("Erreur lecture settings localStorage", e);
+        return { logoUrl: null };
+    }
   });
 
+  // Safe save helper
+  const saveToStorage = (key: string, data: any) => {
+    try {
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch (e: any) {
+        if (e.name === 'QuotaExceededError' || e.code === 22) {
+            alert("⚠️ Attention : Espace de stockage navigateur plein. Les dernières modifications ne seront pas sauvegardées si vous rechargez la page. Essayez de supprimer des étudiants ou de réinitialiser.");
+        } else {
+            console.error(`Erreur sauvegarde ${key}`, e);
+        }
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('pa_students', JSON.stringify(students));
+    saveToStorage('pa_students', students);
   }, [students]);
 
   useEffect(() => {
-    localStorage.setItem('pa_matches', JSON.stringify(matches));
+    saveToStorage('pa_matches', matches);
   }, [matches]);
 
   useEffect(() => {
-    localStorage.setItem('pa_settings', JSON.stringify(settings));
+    saveToStorage('pa_settings', settings);
   }, [settings]);
 
   const addStudent = (student: Student) => {

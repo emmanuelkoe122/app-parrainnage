@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../store';
 import { ClassName, GroupType, Student } from '../types';
 import { Plus, Trash2, Upload, FolderInput, FileImage, Users, Image as ImageIcon } from 'lucide-react';
+import { resizeImage } from '../utils/image';
 
 const SetupPanel: React.FC = () => {
   const { students, settings, addStudent, addStudents, removeStudent, resetAll, updateSettings } = useApp();
@@ -10,30 +11,38 @@ const SetupPanel: React.FC = () => {
   const [newName, setNewName] = useState('');
   const [newClass, setNewClass] = useState<ClassName>(ClassName.BTS1);
   const [newPhoto, setNewPhoto] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Batch Add State
   const [batchClass, setBatchClass] = useState<ClassName>(ClassName.BTS1);
   const [isImporting, setIsImporting] = useState(false);
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewPhoto(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setIsProcessing(true);
+      try {
+        const resized = await resizeImage(file);
+        setNewPhoto(resized);
+      } catch (error) {
+        console.error("Erreur compression image", error);
+        alert("Erreur lors du traitement de l'image.");
+      } finally {
+        setIsProcessing(false);
+      }
     }
   };
   
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            updateSettings({ logoUrl: reader.result as string });
-        };
-        reader.readAsDataURL(file);
+        try {
+            // Resize logo slightly larger than avatars but still compressed
+            const resized = await resizeImage(file, 800, 0.8);
+            updateSettings({ logoUrl: resized });
+        } catch (error) {
+            console.error("Erreur compression logo", error);
+        }
     }
   };
 
@@ -77,39 +86,36 @@ const SetupPanel: React.FC = () => {
           // Skip non-images
           if (!file.type.startsWith('image/')) continue;
 
-          // Create promise to read file
-          const studentPromise = new Promise<Student>((resolve) => {
-              const reader = new FileReader();
-              reader.onload = () => {
-                  // Logic to extract name from filename
-                  // 1. Remove extension
-                  let name = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-                  // 2. Replace underscores and hyphens with spaces
-                  name = name.replace(/[-_]/g, ' ');
-                  // 3. Remove extra spaces
-                  name = name.trim();
-                  // 4. Capitalize words
-                  name = name.replace(/\b\w/g, l => l.toUpperCase());
+          try {
+              // Extract name
+              // 1. Remove extension
+              let name = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+              // 2. Replace underscores and hyphens with spaces
+              name = name.replace(/[-_]/g, ' ');
+              // 3. Remove extra spaces
+              name = name.trim();
+              // 4. Capitalize words
+              name = name.replace(/\b\w/g, l => l.toUpperCase());
 
-                  resolve({
-                      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                      name: name,
-                      photoUrl: reader.result as string,
-                      className: batchClass,
-                      type: type,
-                      isMatched: false
-                  });
-              };
-              reader.readAsDataURL(file);
-          });
+              // Compress image
+              const photoUrl = await resizeImage(file);
 
-          const student = await studentPromise;
-          processedStudents.push(student);
+              processedStudents.push({
+                  id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                  name: name,
+                  photoUrl: photoUrl,
+                  className: batchClass,
+                  type: type,
+                  isMatched: false
+              });
+          } catch (err) {
+              console.error(`Erreur traitement fichier ${file.name}`, err);
+          }
       }
 
       addStudents(processedStudents);
       setIsImporting(false);
-      e.target.value = ''; // Reset input to allow re-selecting same folder if needed
+      e.target.value = ''; // Reset input
       alert(`${processedStudents.length} étudiants ont été importés avec succès dans la classe ${batchClass} !`);
   };
 
@@ -230,9 +236,15 @@ const SetupPanel: React.FC = () => {
                                 onChange={handlePhotoUpload}
                                 className="hidden"
                                 id="photo-upload"
+                                disabled={isProcessing}
                             />
                             <label htmlFor="photo-upload" className="cursor-pointer flex items-center justify-center gap-2 w-full bg-slate-900 border border-slate-600 rounded p-2 hover:bg-slate-700 transition">
-                                <Upload className="w-4 h-4" /> {newPhoto ? 'Photo chargée' : 'Choisir une image'}
+                                {isProcessing ? (
+                                    <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+                                ) : (
+                                    <Upload className="w-4 h-4" />
+                                )}
+                                {newPhoto ? 'Photo chargée' : 'Choisir une image'}
                             </label>
                         </div>
                         <button 
